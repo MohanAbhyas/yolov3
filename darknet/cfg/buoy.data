@@ -2,4 +2,4 @@ classes= 1
 train  = train.txt
 valid  = test.txt
 names = buoy.names
-backup = gdrive/My\ Drive
+backup = gdrive/My Drive
