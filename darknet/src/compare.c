@@ -56,7 +56,7 @@ void train_compare(char *cfgfile, char *weightfile)
         avg_loss = avg_loss*.9 + loss*.1;
         printf("%.3f: %f, %f avg, %lf seconds, %ld images\n", (float)*net.seen/N, loss, avg_loss, sec(clock()-time), *net.seen);
         free_data(train);
-        if(i%100 == 0){
+        if(i%10 == 0){
             char buff[256];
             sprintf(buff, "%s/%s_%d_minor_%d.weights","/content/yolov3/darknet/gdrive/My\ Drive",base, epoch, i);
             save_weights(net, buff);
@@ -65,7 +65,7 @@ void train_compare(char *cfgfile, char *weightfile)
             epoch = *net.seen/N;
             i = 0;
             char buff[256];
-            sprintf(buff, "%s/%s_%d.weights","/content/yolov3/darknet/gdrive/My Drive",base, epoch);
+            sprintf(buff, "%s/%s_%d.weights","/content/yolov3/darknet/gdrive/My\ Drive",base, epoch);
             save_weights(net, buff);
             if(epoch%22 == 0) net.learning_rate *= .1;
         }
