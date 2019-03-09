@@ -1,5 +1,5 @@
 classes= 1
 train  = buoy_train.txt
 valid  = buoy_test.txt
-names = buoy.names
+names = data/buoy.names
 backup = backup/

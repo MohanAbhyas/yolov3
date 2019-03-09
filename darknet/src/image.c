@@ -238,12 +238,19 @@ image **load_alphabet()
 
 void draw_detections(image im, detection *dets, int num, float thresh, char **names, image **alphabet, int classes)
 {
-    int i,j;
+    int i,j, max_i = 0, max_j = 0;
+    float max_prob = 0;
 
     for(i = 0; i < num; ++i){
         char labelstr[4096] = {0};
         int class = -1;
         for(j = 0; j < classes; ++j){
+            if(max_prob < dets[i].prob[j])
+            {
+                max_prob = dets[i].prob[j];
+                max_i = i;
+                max_j = j;
+            }
             if (dets[i].prob[j] > thresh){
                 if (class < 0) {
                     strcat(labelstr, names[j]);
@@ -255,18 +262,16 @@ void draw_detections(image im, detection *dets, int num, float thresh, char **na
                 printf("%s: %.0f%%\n", names[j], dets[i].prob[j]*100);
             }
         }
-        if(class >= 0){
+    }
+
+    for(i = 0; i < num; ++i)
+    {
+        if(i == max_i && dets[max_i].prob[max_j] > thresh){
             int width = im.h * .006;
 
-            /*
-               if(0){
-               width = pow(prob, 1./2.)*10+1;
-               alphabet = 0;
-               }
-             */
 
             //printf("%d %s: %.0f%%\n", i, names[class], prob*100);
-            int offset = class*123457 % classes;
+            int offset = max_j*123457 % classes;
             float red = get_color(2,offset,classes);
             float green = get_color(1,offset,classes);
             float blue = get_color(0,offset,classes);
@@ -292,7 +297,7 @@ void draw_detections(image im, detection *dets, int num, float thresh, char **na
 
             draw_box_width(im, left, top, right, bot, width, red, green, blue);
             if (alphabet) {
-                image label = get_label(alphabet, labelstr, (im.h*.03));
+                image label = get_label(alphabet, names[max_j], (im.h*.03));
                 draw_label(im, top + width, left, label, rgb);
                 free_image(label);
             }

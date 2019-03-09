@@ -132,15 +132,15 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
             if(ngpus != 1) sync_nets(nets, ngpus, 0);
 #endif
             char buff[256];
-            sprintf(buff, "%s/%s.backup", "/content/yolov3/darknet/gdrive/My\ Drive", base);
+            sprintf(buff, "%s/%s.backup", backup_directory, base);
             save_weights(net, buff);
         }
-        if(i%1000==0 || (i < 1000 && i%100 == 0)){
+        if(i%10000==0 || (i < 1000 && i%100 == 0) || (i < 10000 && i%1000 == 0)){
 #ifdef GPU
             if(ngpus != 1) sync_nets(nets, ngpus, 0);
 #endif
             char buff[256];
-            sprintf(buff, "%s/%s_%d.weights", "/content/yolov3/darknet/gdrive/My\ Drive", base, i);
+            sprintf(buff, "%s/%s_%d.weights", backup_directory, base, i);
             save_weights(net, buff);
         }
         free_data(train);
@@ -607,7 +607,31 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
             save_image(im, outfile);
         }
         else{
-            save_image(im, "predictions");
+            char fname[4096] = "predict_";
+            int m = 0;
+            for(m = 0; m < 256; ++m)
+            {
+                if(input[m] == '.')
+                {
+                    break;
+                }
+            }
+            int nm;
+            for(nm = m-1; nm >= 0; --nm)
+            {
+                if(input[nm] == '/')
+                {
+                    break;
+                }
+            }
+            int pos = 8;
+            for(int l = nm+1; l < m; ++l)
+            {
+                fname[pos] = input[l];
+                pos++;
+            }
+            fname[pos] = '\0';
+            save_image(im, fname);
 #ifdef OPENCV
             make_window("predictions", 512, 512, 0);
             show_image(im, "predictions", 0);
