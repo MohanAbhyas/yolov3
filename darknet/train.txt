@@ -1,1 +1,1 @@
-/content/yolov3/darknet/data/buoy_for_yolo/JPEGimages/0.jpg
+/content/yolov3/darknet/data/buoy_for_yolo/JPEGimages/1101.jpg
