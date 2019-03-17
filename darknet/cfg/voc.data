@@ -3,4 +3,3 @@ train  = train.txt
 valid  = test.txt
 names = data/voc.names
 backup = backup
-
